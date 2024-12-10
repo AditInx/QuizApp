@@ -1,4 +1,3 @@
-
 let timeLeft = document.querySelector(".time-left");
 let quizContainer = document.getElementById("container");
 let nextBtn = document.getElementById("next-button");
@@ -12,7 +11,7 @@ let startButton = document.getElementById("start-button");
 let questionCount;
 let scoreCount = 0;
 let count = 11;
-let countDown;
+let countdown;
 
 const quizArray = [
   {
@@ -34,6 +33,20 @@ const quizArray = [
     correct: "Charles Babbage",
   },
 ];
+
+
+//Timer
+const timerDisplay = () => {
+    countdown = setInterval(()=>{
+        count--;
+        timeLeft.innerHTML = `${count}s`;
+        if(count === 0){
+            clearInterval(countdown);
+            displayNext();
+        }
+    },1000);
+}
+
 
 
 //Display quiz
@@ -88,6 +101,8 @@ const initial = () => {
     questionCount = 0;
     scoreCount = 0;
     count = 11;
+    clearInterval(countdown);
+    timerDisplay();
     quizCreator();
     quizDisplay(questionCount);
 }
