@@ -1,8 +1,8 @@
-const quizDisplay = document.getElementById("display");
+
 let timeLeft = document.querySelector(".time-left");
 let quizContainer = document.getElementById("container");
 let nextBtn = document.getElementById("next-button");
-let countOfQuestion = document.querySelector("number-of-question");
+let countOfQuestion = document.querySelector(".number-of-question");
 let displayContainer = document.getElementById("display-container");
 let scoreContainer = document.querySelector(".score-container");
 let restart = document.querySelector("#restart");
@@ -36,6 +36,19 @@ const quizArray = [
 ];
 
 
+//Display quiz
+const quizDisplay = (questionCount) => {
+    let quizCards = document.querySelectorAll(".container-mid");
+
+    //Hide other cards
+    quizCards.forEach((card)=>{
+        card.classList.add("hide");
+    });
+
+    //display current question card
+    quizCards[questionCount].classList.remove("hide");
+}
+
 //Quiz Creation 
 function quizCreator(){
     //randomly sort questions
@@ -50,7 +63,7 @@ function quizCreator(){
         div.classList.add("container-mid","hide");
 
         //question number
-        countOfQuestion.innerHTML = 1 + "of" + quizArray.length + "Question";
+        countOfQuestion.innerHTML = questionCount + 1 + " of " + quizArray.length + " Question";
 
         //question
         let question_DIV = document.createElement("p");
@@ -67,4 +80,31 @@ function quizCreator(){
 
         quizContainer.appendChild(div);
     }
+}
+
+//initial setup
+const initial = () => {
+    quizContainer.innerHTML = "";
+    questionCount = 0;
+    scoreCount = 0;
+    count = 11;
+    quizCreator();
+    quizDisplay(questionCount);
+}
+
+
+//when user clicks on start button
+startButton.addEventListener("click",()=>{
+    startScreen.classList.add("hide");
+    displayContainer.classList.remove("hide");
+    initial();
+})
+
+
+
+
+//hide quiz and display start screen
+window.onload = () => {
+    startScreen.classList.remove("hide");
+    displayContainer.classList.add("hide");
 }
