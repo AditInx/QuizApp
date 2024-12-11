@@ -8,7 +8,7 @@ let restart = document.querySelector("#restart");
 let userScore = document.getElementById("user-score");
 let startScreen = document.querySelector(".start-screen");
 let startButton = document.getElementById("start-button");
-let questionCount;
+let questionCount = 0;
 let scoreCount = 0;
 let count = 11;
 let countdown;
@@ -16,34 +16,57 @@ let countdown;
 const quizArray = [
   {
     id: "0",
-    question: "which is the most widely spoken language in the world?",
+    question: "Which is the most widely spoken language in the world?",
     options: ["Spanish", "Mandarin", "English", "German"],
     correct: "Mandarin",
   },
   {
     id: "1",
-    question: "which is the only continent in the world without a desert?",
+    question: "Which is the only continent in the world without a desert?",
     options: ["North America", "Asia", "Africa", "Europe"],
     correct: "Europe",
   },
   {
     id: "2",
-    question: "who invented Computer?",
+    question: "Who invented the computer?",
     options: ["Charles Babbage", "Henry Luce", "Henry Babbage", "Charles Luce"],
     correct: "Charles Babbage",
   },
 ];
 
-
-//Restart Quiz:
-restart.addEventListener("click",()=>{
+// Restart Quiz
+restart.addEventListener("click", () => {
   initial();
   displayContainer.classList.remove("hide");
   scoreContainer.classList.add("hide");
 });
 
+// Next Button
+nextBtn.addEventListener("click", () => {
+  displayNext();
+});
 
-//Timer
+// Display Next Question
+const displayNext = () => {
+  questionCount++;
+  if (questionCount === quizArray.length) {
+    // Hide question container and show score screen
+    displayContainer.classList.add("hide");
+    scoreContainer.classList.remove("hide");
+
+    // Update user score dynamically
+    userScore.innerHTML = `Your score is ${scoreCount} out of ${quizArray.length}`;
+  } else {
+    // Update current question count and reset timer
+    countOfQuestion.innerHTML = `${questionCount + 1} of ${quizArray.length} Question`;
+    count = 11;
+    clearInterval(countdown);
+    timerDisplay();
+    quizDisplay(questionCount);
+  }
+};
+
+// Timer
 const timerDisplay = () => {
   countdown = setInterval(() => {
     count--;
@@ -55,43 +78,42 @@ const timerDisplay = () => {
   }, 1000);
 };
 
-//Display quiz
+// Display Quiz
 const quizDisplay = (questionCount) => {
   let quizCards = document.querySelectorAll(".container-mid");
 
-  //Hide other cards
+  // Hide other cards
   quizCards.forEach((card) => {
     card.classList.add("hide");
   });
 
-  //display current question card
+  // Display current question card
   quizCards[questionCount].classList.remove("hide");
 };
 
-//Quiz Creation
+// Quiz Creation
 function quizCreator() {
-  //randomly sort questions
+  // Randomly sort questions
   quizArray.sort(() => Math.random() - 0.5);
 
-  //generate quiz
+  // Generate quiz
   for (let i of quizArray) {
     i.options.sort(() => Math.random() - 0.5);
 
-    //quiz card creation
+    // Quiz card creation
     let div = document.createElement("div");
     div.classList.add("container-mid", "hide");
 
-    //question number
-    countOfQuestion.innerHTML =
-      questionCount + 1 + " of " + quizArray.length + " Question";
+    // Question number
+    countOfQuestion.innerHTML = `${questionCount + 1} of ${quizArray.length} Question`;
 
-    //question
+    // Question
     let question_DIV = document.createElement("p");
     question_DIV.classList.add("question");
     question_DIV.innerHTML = i.question;
     div.appendChild(question_DIV);
 
-    //options
+    // Options
     div.innerHTML += `<button class="option-div" onclick="checker(this)">${i.options[0]}</button>
         <button class="option-div" onclick="checker(this)">${i.options[1]}</button>
         <button class="option-div" onclick="checker(this)">${i.options[2]}</button>
@@ -101,37 +123,37 @@ function quizCreator() {
   }
 }
 
-//Checker Function to check if the option is correct or not
+// Checker Function to check if the option is correct or not
 const checker = (userOption) => {
   let userSolution = userOption.innerText;
   let question =
     document.getElementsByClassName("container-mid")[questionCount];
   let options = question.querySelectorAll(".option-div");
 
-  //if user clicked answer == correct option stored in object
+  // If user clicked answer == correct option stored in object
   if (userSolution === quizArray[questionCount].correct) {
     userOption.classList.add("correct");
     scoreCount++;
   } else {
     userOption.classList.add("incorrect");
 
-    //For marking the correct option
+    // For marking the correct option
     options.forEach((element) => {
       if (element.innerText === quizArray[questionCount].correct) {
         element.classList.add("correct");
       }
     });
   }
-  //clear interval(stop timer)
+  // Clear interval (stop timer)
   clearInterval(countdown);
 
-  //disable all options
+  // Disable all options
   options.forEach((element) => {
     element.disabled = true;
   });
 };
 
-//initial setup
+// Initial Setup
 const initial = () => {
   quizContainer.innerHTML = "";
   questionCount = 0;
@@ -143,14 +165,14 @@ const initial = () => {
   quizDisplay(questionCount);
 };
 
-//when user clicks on start button
+// When user clicks on start button
 startButton.addEventListener("click", () => {
   startScreen.classList.add("hide");
   displayContainer.classList.remove("hide");
   initial();
 });
 
-//hide quiz and display start screen
+// Hide quiz and display start screen on window load
 window.onload = () => {
   startScreen.classList.remove("hide");
   displayContainer.classList.add("hide");
